@@ -3,3 +3,5 @@
 ## Soal 1
 
 :family_man_man_girl:
+
+![Image](/home/ariefp/Documents/aaaa.jpg)
