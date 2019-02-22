@@ -3,9 +3,21 @@
 ## Soal 1
 Anda diminta tolong oleh teman anda untuk mengembalikan filenya yang telah dienkripsi oleh seseorang menggunakan bash script, file yang dimaksud adalah nature.zip. Karena terlalu mudah kalian memberikan syarat akan membuka seluruh file tersebut jika pukul 14:14 pada tanggal 14 Februari atau hari tersebut adalah hari jumat pada bulan Februari. Hint: Base64, Hexdump
 
+
 ### Jawab :
-> We're living the future so
-> the present is our past.
+```#!/bin/bash
+
+for i in *.jpg
+do
+        base64 -d $i | xxd -r > /home/chrstnamelia/Documents/nature/tutu/$1
+done
+
+crontab:
+
+13 14 * 2 5 /bin/bash /home/chrstnamelia/Documents/nature/soal1.sh
+```
+
+Menggunakan base64 dan Hexdump(xxd). Variabel I adalah nama file. Untuk setiap file di dalam folder /home/chrstnamelia/Documents/nature*.jpg akan dilakukan decode dengan base64 -d dan akan dikembalikan lagi agar dapat dibaca dengan menggunakan Hexdump(xxd -r). Hasilnya akan tersimpan di dalam file yang bernama tutu.
 
 ## Soal 2
 Anda merupakan pegawai magang pada sebuah perusahaan retail, dan anda diminta
@@ -27,13 +39,20 @@ poin b.
 
 `awk -F ',' -v max=0 '{if($7=='2012' && $10>max){want=$1; max=$10}}END{print want} ' WA_Sales_Products_2012-14.csv`
 
+Untuk mengecek yang memimiliki quantity terbesar maka dibuat variabel max. Variabel max digunakan untuk membandingkan nilai quantity dari suatu baris. Jika nilai quantitynya lebih besar maka nilai max akan diperbarui. Sehingga didapatkan nanti negara yang memiliki quantity terbesar
+
 2. b.
 
-```awk -F ',' '{if(($7=="2012") && ($1=="United States")) produk[$4]+=$10} END {for(x in produk)print x}' WA_Sales_Products_2012-14.csv | sort -r | head -3```
+```awk -F ',' '{if(($7=="2012") && ($1=="United States")) produk[$4]+=$10} END {for(x in produk)print x}' WA_Sales_Products_2012-14.csv | sort -nr | head -3```
+
+Hasil yang didapatkan dari soal a adalah United States. Oleh karena itu United States ditambahkan sebagai syarat. Produk_line berada pada kolom ke-4. Setelah itu diurutkan dan diambil 3 teratas
 
 2. c.
 
-```awk -F ',' '{if(($7=="2012") && ($1=="United States") && ($4=="Personal Accessories" || $4 == "Outdoor Protection" || $4 =="Mountaineering Equipment")) produk[$6]+=$10} END {for(x in produk)print x}' WA_Sales_Products_2012-14.csv | sort -r | head -3```
+```awk -F ',' '{if(($7=="2012") && ($1=="United States") && ($4=="Personal Accessories" || $4 == "Outdoor Protection" || $4 =="Mountaineering Equipment")) produk[$6]+=$10} END {for(x in produk)print x}' WA_Sales_Products_2012-14.csv | sort -nr | head -3```
+
+Hasil dari soal b adalah Personal Accessories, Outdoor Protection, Mountaineering Equipment. Sama seperti soal sebelumnya, hanya saja product berada pada kolom ke-6.
+
 
 ## Soal 3. 
 
@@ -69,6 +88,104 @@ a=1
 Untuk membuat sebuah string secara random digunakan `cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 12 | head -n 1 ` dimana /dev/urandom adalah direktori untuk membuat string secara random. `tr -dc 'a-zA-Z0-9' ` digunakan untuk membuat string random tersebut terdiri dari hurul alphabet biasa maupun secara uppercase dan juga terdiri dari angka-angka. `fold -w 12` adalah panjang string yang diinginkan, dalam hal ini panjang string adalah 12. `head -n 1` berfungsi untuk mengambil satu baris saja string random
 
 While dijalankan untuk mengecek apakah nama file untuk menyimpan password tersebut sudah ada atau belum. Jika sudah ada maka akan bertambah satu sampai nama filenya belum ada. 
+
+## Soal 4
+
+Lakukan backup file syslog setiap jam dengan format nama file “jam:menit tanggal-
+bulan-tahun”. Isi dari file backup terenkripsi dengan konversi huruf (string
+manipulation) yang disesuaikan dengan jam dilakukannya backup misalkan sebagai
+berikut:
+
+a. Huruf b adalah alfabet kedua, sedangkan saat ini waktu menunjukkan
+pukul 12, sehingga huruf b diganti dengan huruf alfabet yang memiliki
+urutan ke 12+2 = 14.
+
+b. Hasilnya huruf b menjadi huruf n karena huruf n adalah huruf ke
+empat belas, dan seterusnya.
+
+c. setelah huruf z akan kembali ke huruf a
+
+d. Backup file syslog setiap jam.
+
+e. dan buatkan juga bash script untuk dekripsinya.
+
+### Jawab :
+
+```
+nano soal4enkripsi.sh
+#!/bin/bash
+tgl=`tgl +"%H:%M %d-%b-%Y"`
+hrs=`tgl +%H`
+cat /var/log/syslog | xxd -p -c1 | awk -v a=$hrs '
+function hex2dec(h,i,x,v){
+        h=tolower(h);sub(/^0x/,"",h)
+        for(i=1;i=<=length(h);++i){
+                x=index("0123456789abcdef" , substr(h,i,l))
+                if(!x)return "NaN"
+                v=(16*v)+x-1
+        }
+        return v
+}
+BEGIN { hrs = strtonum(a) }
+{
+        $1 = hex2dec(0x$1)
+        if ($1 >= 65 && $1 <= 90){
+                $1 = $1 - 65
+                $1 = ($1 + hrs) % 26
+                $1 = $1 + 65
+        }
+        if ($1 >= 97 && $1 <= 122){
+                $1 = $1 - 97
+                $1 = ($1 + hrs) % 26
+                $1 = $1 + 97
+        }
+        printf("%c", $1)
+}
+' > /home/chrstnamelia/Documents/"$tgl".log
+
+
+
+
+
+nano soal4dekripsi.sh
+
+#!/bin/bash
+hrs=${1:0:2}
+cat "$1$2" | xxd -p -c1 | awk -v a=$hrs '
+function hex2dec(h      ,i,x,v){
+  h=tolower(h);sub(/^0x/,"",h)
+  for(i=1;i<=length(h);++i){
+    x=index("0123456789abcdef",substr(h,i,1))
+    if(!x)return "NaN"
+    v=(16*v)+x-1
+  }
+  return v
+}
+BEGIN { hrs = strtonum(a) }
+{
+        $1 = hex2dec(0x$1)
+        if ($1 >= 65 && $1 <= 90) {
+                $1 = $1 - 65
+                $1 = ($1 - hrs) % 26
+                while ($1 < 0)
+                        $1 = $1 + 26
+                $1 = $1 + 65
+        }
+        if ($1 >= 97 && $1 <= 122) {
+                $1 = $1 - 97
+                $1 = ($1 - hrs) % 26
+                while ($1 < 0)
+                        $1 = $1 + 26
+                $1 = $1 + 97
+        }
+        printf("%c", $1)
+}
+' > /home/chrstnamelia/Documents/decrypted_"$1$2"
+
+cronjob
+* * * * * /bin/bash /home/chrstnamelia/Documents/soal4enkripsi.sh
+```
+Tahap pertama yaitu mengubah isi dari var/syslog kedalam bentuk ASCII untuk mempermudah penamaan file back up. Pertama, isi dari /var/log/syslog diubah dengan hexdump, kemudian dengan fungsi hex2dec, bilangan hexadesimal diubah bentuk. Untuk penamaan, bilangan decimal dikurang 65 untuk uppercase dan dikurang 97 untuk lowercase. Setelah itu,hasilnya dimodulus 26 karena alfabet terdiri atas 26 huruf. Kemudian hasilnya ditambahkan 65 untuk Uppercase dan 97 unutk lowercase untuk mengembalikan ke bentuk ASCII.
 
 ## Soal 5
 Buatlah sebuah script bash untuk menyimpan record dalam syslog yang memenuhi
