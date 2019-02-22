@@ -2,10 +2,4 @@
 
 ## Soal 1
 
-```javascript
-function fancyAlert(arg) {
-  if(arg) {
-    $.facebox({div:'#foo'})
-  }
-}
-```
+:family_man_man_girl:
