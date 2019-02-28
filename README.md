@@ -70,19 +70,43 @@ d. Password yang dihasilkan tidak boleh sama.
 
 ### Jawab :
 ```
-a=1
 
- while :
- do
-  if [ -f /home/ariefp/password$a.txt ]
-  then
-   a=$((a+1))
-   continue
-  else
-   cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 12 | head -n 1 > /home/ariefp/password$a.txt
-   break
-  fi
-  done
+#!/bin/bash
+
+a=1
+b=1
+
+while :
+do
+ if [ -f /home/ariefp/password$a.txt ]
+ then
+  a=$((a+1))
+  continue
+ else
+  cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 12 | head -n 1 > /home/ariefp/password$a.txt
+  break
+ fi
+done
+
+while :
+do
+ if [ $b -gt $a ]
+ then
+  break
+ elif [ $b == $a ]
+ then
+  b=$((b+1))
+ elif [[("$(echo "$(</home/ariefp/password$a.txt)" )" == "$(echo "$(</home/ariefp/password$b.txt)" )")]]
+ then
+  rm /home/ariefp/password$a.txt
+  cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 12 | head -n 1 > /home/ariefp/password$a.txt
+  break
+ else
+  b=$((b+1))
+ fi
+done
+
+
 ```
 Untuk membuat sebuah string secara random digunakan `cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 12 | head -n 1 ` dimana /dev/urandom adalah direktori untuk membuat string secara random. `tr -dc 'a-zA-Z0-9' ` digunakan untuk membuat string random tersebut terdiri dari hurul alphabet biasa maupun secara uppercase dan juga terdiri dari angka-angka. `fold -w 12` adalah panjang string yang diinginkan, dalam hal ini panjang string adalah 12. `head -n 1` berfungsi untuk mengambil satu baris saja string random
 
@@ -205,9 +229,10 @@ d. Jalankan script tadi setiap 6 menit dari menit ke 2 hingga 30, contoh 13:02, 
 ```
 # !/bin/bash
 
-awk '{if ($0 ~ /cron/ || $0 ~ /CRON/ && $0 !~ /sudo/ && NF < 13) print $0}' /var/log/syslog >> /home/ariefp/modul1/syslog5.log
+awk '{ if (tolower($0) ~ /cron/ && tolower($0) !~ /sudo/ && NF <13) print $0}' /var/log/syslog >> /home/ariefp/syslogno5.log
 
- 2-30/6 * * * * /bin/bash /home/arief/nomor5.sh
+2-30/6 * * * * /bin/bash /home/arief/nomor5.sh
+ 
 ```
 Untuk mengecek apakah mengandung 'cron', maka digunakan `$0 ~ /cron/ || $0 ~ /CRON/` dimana cron secara penulisan ada 2 kemungkinan yakni cron dan CRON. Lalu kemudian tidak mengandung sudo, maka digunakan $0 `!~ /sudo/` dan untuk syarat yang terakhir yaitu jumlah fieldnya kurang dari 13 `NF < 13`. Kemudian hasilnya disimpan dalam /home/ariefp/modul1/syslog5.log
 
