@@ -137,35 +137,34 @@ e. dan buatkan juga bash script untuk dekripsinya.
 ```
 nano soal4enkripsi.sh
 #!/bin/bash
-tgl=`tgl +"%H:%M %d-%b-%Y"`
-hrs=`tgl +%H`
-cat /var/log/syslog | xxd -p -c1 | awk -v a=$hrs '
-function hex2dec(h,i,x,v){
-        h=tolower(h);sub(/^0x/,"",h)
-        for(i=1;i=<=length(h);++i){
-                x=index("0123456789abcdef" , substr(h,i,l))
-                if(!x)return "NaN"
-                v=(16*v)+x-1
-        }
-        return v
+date=`date +"%H:%M %d-%b-%Y"` #penamaan back up file yagn akan disimpan
+jam=`date +%H`      #menentukan jam
+cat /var/log/syslog | xxd -p -c1 | awk -v a=$jam '  #mengabil file dari syslog, diubah ke bentuk hexdum kemudian dikoncersikan dari hexa ke kode ASCII
+function hex2dec(h,i,x,v){  #mendefinisikan fungsi untuk mengubah hexadecimal ke decimal
+  h=tolower(h);sub(/^0x/,"",h)  
+  for(i=1;i<=length(h);++i){  
+    x=index("0123456789abcdef" , substr(h,i,l)) #
+    if(!x)return "NaN"  
+    v=(16*v)+x-1  
+  }
+  return v  
 }
-BEGIN { hrs = strtonum(a) }
+BEGIN { jam = strtonum(a) } #mengkonversikan string ke number
 {
-        $1 = hex2dec(0x$1)
-        if ($1 >= 65 && $1 <= 90){
-                $1 = $1 - 65
-                $1 = ($1 + hrs) % 26
-                $1 = $1 + 65
-        }
-        if ($1 >= 97 && $1 <= 122){
-                $1 = $1 - 97
-                $1 = ($1 + hrs) % 26
-                $1 = $1 + 97
-        }
-        printf("%c", $1)
+  $1 = hex2dec(0x$1)  #mengambil 1 karakter untuk diubah ke bentuk decimal agar dapat digunakan
+  if ($1 >= 65 && $1 <= 90){  #code untuk menghitung bilangan decimal agar mendapatkan huruf besar pada ASCII
+    $1 = $1 - 65
+    $1 = ($1 + jam) % 26
+    $1 = $1 + 65
+  }
+  if ($1 >= 97 && $1 <= 122){ #code untuk menghitung bilangan decimal agar mendapatkan huruf kecil pada ASCII
+    $1 = $1 - 97
+    $1 = ($1 + jam) % 26
+    $1 = $1 + 97
+  }
+  printf("%c", $1)  #mencetak karakter
 }
-' > /home/chrstnamelia/Documents/"$tgl".log
-
+' > /home/chrstnamelia/Documents/"$date".log
 
 
 
