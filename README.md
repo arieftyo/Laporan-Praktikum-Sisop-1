@@ -16,9 +16,7 @@ crontab:
 
 13 14 * 2 5 /bin/bash /home/chrstnamelia/Documents/nature/soal1.sh
 
-
-
-![nomor 1](/home/ariefp/Laporan-Praktikum-Sisop1/images/1.png)
+![alt text](/home/ariefp/Laporan-Praktikum-Sisop1/images/1.png)
 
 ```
 
