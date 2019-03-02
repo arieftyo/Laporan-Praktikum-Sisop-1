@@ -15,6 +15,11 @@ done
 crontab:
 
 13 14 * 2 5 /bin/bash /home/chrstnamelia/Documents/nature/soal1.sh
+
+
+
+![nomor 1](/home/ariefp/Laporan-Praktikum-Sisop1/images/1.png)
+
 ```
 
 Menggunakan base64 dan Hexdump(xxd). Variabel I adalah nama file. Untuk setiap file di dalam folder /home/chrstnamelia/Documents/nature*.jpg akan dilakukan decode dengan base64 -d dan akan dikembalikan lagi agar dapat dibaca dengan menggunakan Hexdump(xxd -r). Hasilnya akan tersimpan di dalam file yang bernama tutu.
@@ -139,7 +144,8 @@ nano soal4enkripsi.sh
 #!/bin/bash
 date=`date +"%H:%M %d-%b-%Y"` #penamaan back up file yagn akan disimpan
 jam=`date +%H`      #menentukan jam
-cat /var/log/syslog | xxd -p -c1 | awk -v a=$jam '  #mengabil file dari syslog, diubah ke bentuk hexdum kemudian dikoncersikan dari hexa ke kode ASCII
+cat /var/log/syslog | xxd -p -c1 | awk -v a=$jam '  #mengabil file dari syslog, diubah ke bentuk hexdum 
+#kemudian dikonversikan dari hexa ke kode ASCII
 function hex2dec(h,i,x,v){  #mendefinisikan fungsi untuk mengubah hexadecimal ke decimal
   h=tolower(h);sub(/^0x/,"",h)  
   for(i=1;i<=length(h);++i){  
