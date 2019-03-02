@@ -45,11 +45,15 @@ poin b.
 
 Untuk mengecek yang memimiliki quantity terbesar maka dibuat variabel max. Variabel max digunakan untuk membandingkan nilai quantity dari suatu baris. Jika nilai quantitynya lebih besar maka nilai max akan diperbarui. Sehingga didapatkan nanti negara yang memiliki quantity terbesar
 
+![alt text](https://github.com/arieftyo/SoalShift_modul1_c14/blob/master/2a.png)
+
 2. b.
 
 ```awk -F ',' '{if(($7=="2012") && ($1=="United States")) produk[$4]+=$10} END {for(x in produk)print x}' WA_Sales_Products_2012-14.csv | sort -nr | head -3```
 
 Hasil yang didapatkan dari soal a adalah United States. Oleh karena itu United States ditambahkan sebagai syarat. Produk_line berada pada kolom ke-4. Setelah itu diurutkan dan diambil 3 teratas
+
+![alt text](https://github.com/arieftyo/SoalShift_modul1_c14/blob/master/2b.png)
 
 2. c.
 
@@ -57,6 +61,7 @@ Hasil yang didapatkan dari soal a adalah United States. Oleh karena itu United S
 
 Hasil dari soal b adalah Personal Accessories, Outdoor Protection, Mountaineering Equipment. Sama seperti soal sebelumnya, hanya saja product berada pada kolom ke-6.
 
+![alt text](https://github.com/arieftyo/SoalShift_modul1_c14/blob/master/2c.png)
 
 ## Soal 3. 
 
@@ -114,7 +119,10 @@ done
 ```
 Untuk membuat sebuah string secara random digunakan `cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 12 | head -n 1 ` dimana /dev/urandom adalah direktori untuk membuat string secara random. `tr -dc 'a-zA-Z0-9' ` digunakan untuk membuat string random tersebut terdiri dari hurul alphabet biasa maupun secara uppercase dan juga terdiri dari angka-angka. `fold -w 12` adalah panjang string yang diinginkan, dalam hal ini panjang string adalah 12. `head -n 1` berfungsi untuk mengambil satu baris saja string random
 
-While dijalankan untuk mengecek apakah nama file untuk menyimpan password tersebut sudah ada atau belum. Jika sudah ada maka akan bertambah satu sampai nama filenya belum ada. 
+While dijalankan untuk mengecek apakah nama file untuk menyimpan password tersebut sudah ada atau belum. Jika sudah ada maka akan bertambah satu sampai nama filenya belum ada. While kedua dijalankan untuk mengecek apakah ada password sama yang terbentuk. JIka ada maka file dihapus dan dibuat ulang dengan yang baru
+
+
+![alt text](https://github.com/arieftyo/SoalShift_modul1_c14/blob/master/3.png)
 
 ## Soal 4
 
@@ -240,4 +248,5 @@ awk '{ if (tolower($0) ~ /cron/ && tolower($0) !~ /sudo/ && NF <13) print $0}' /
 ```
 Untuk mengecek apakah mengandung 'cron', maka digunakan `$0 ~ /cron/ || $0 ~ /CRON/` dimana cron secara penulisan ada 2 kemungkinan yakni cron dan CRON. Lalu kemudian tidak mengandung sudo, maka digunakan $0 `!~ /sudo/` dan untuk syarat yang terakhir yaitu jumlah fieldnya kurang dari 13 `NF < 13`. Kemudian hasilnya disimpan dalam /home/ariefp/modul1/syslog5.log
 
+![alt text](https://github.com/arieftyo/SoalShift_modul1_c14/blob/master/5.png)
 
