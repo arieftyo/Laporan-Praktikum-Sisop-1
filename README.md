@@ -16,9 +16,10 @@ crontab:
 
 13 14 * 2 5 /bin/bash /home/chrstnamelia/Documents/nature/soal1.sh
 
-![alt text](https://github.com/arieftyo/SoalShift_modul1_c14/blob/master/1.png)
 
 ```
+
+![alt text](https://github.com/arieftyo/SoalShift_modul1_c14/blob/master/1.png)
 
 Menggunakan base64 dan Hexdump(xxd). Variabel I adalah nama file. Untuk setiap file di dalam folder /home/chrstnamelia/Documents/nature*.jpg akan dilakukan decode dengan base64 -d dan akan dikembalikan lagi agar dapat dibaca dengan menggunakan Hexdump(xxd -r). Hasilnya akan tersimpan di dalam file yang bernama tutu.
 
